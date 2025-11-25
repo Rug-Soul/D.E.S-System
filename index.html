@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Dynamic Estimation System for Luxury Rugs - Commercial Version</title>
+    <!-- Favicon / Icon for browser tab -->
+<link rel="icon" type="images.png" href="images/logo-short.png">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="author" content="templatesjungle">
+    <meta name="keywords" content="Website Template">
+    <meta name="description" content="Website Template">
+
+    <!--Bootstrap ================================================== -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <!--Link Swiper's CSS ================================================== -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+    <!-- Style Sheet ================================================== -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Google Fonts ================================================== -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+        rel="stylesheet">
+
+
+
+<!-- jsPDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<!-- html2canvas -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+
+<style>
+/* Base Styles */
+body {
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(8deg, #512, #ED872D);
+  color: #272424;
+}
+
+/* Headings */
+h1 { text-align: center; margin: 20px; color: #21004f; font-size: 1.5rem; }
+h3 { margin-top: 20px; font-size: 1rem; }
+
+/* Container */
+.container {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding-bottom: 40px;
+}
+
+/* Calculator / Card / Instruction Box */
+.calculator-container,
+.instruction-box,
+.card {
+  background: rgba(0, 50, 120, 0.25);
+  border-radius: 18px;
+  padding: 1px 15px;
+  backdrop-filter: blur(15px) saturate(180%);
+  -webkit-backdrop-filter: blur(15px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
+  color: #eaf6ff;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  margin-bottom: 3px; /* reduce as needed */
+}
+
+.calculator-container:hover,
+.instruction-box:hover,
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5);
+}
+
+/* Glossy shine animation */
+.calculator-container::before,
+.instruction-box::before,
+.card::before {
+  content: "";
+  position: absolute;
+  top: -80%;
+  left: -80%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(120deg, rgba(255,255,255,0.4) 0%, transparent 60%);
+  transform: rotate(25deg);
+  animation: glossy-swipe 6s linear infinite;
+}
+
+@keyframes glossy-swipe {
+  0% { transform: translateX(-60%) rotate(25deg); }
+  100% { transform: translateX(60%) rotate(25deg); }
+}
+
+/* Instruction Box Text */
+.instruction-box {
+  color: #272424;
+  line-height: 1.6;
+}
+
+/* Labels */
+label {
+  display: block;
+  margin-top: 10px;
+  font-weight: 600;
+}
+
+/* Inputs & Selects */
+input, select {
+  width: 88%;
+  padding: 8px;
+  margin-top: 5px;
+  border: none;
+  border-radius: 10px;
+  outline: none;
+  background: #512889b8;
+  transition: 0.3s;
+  font-size: 1rem;
+}
+
+input:focus, select:focus { background: rgba(0,0,0,0.39); }
+
+/* Flex rows */
+.flex-row {
+  display: flex;
+  gap: 5px;
+  margin-top: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Buttons */
+button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 10px;
+  transition: 0.3s;
+  color: #e0b3ff;
+  background: linear-gradient(0deg, #220549, #ffc190);
+  box-shadow: 0 4px 15px rgb(0,0,0);
+  font-size: 1rem;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+}
+
+#reset {
+  background: linear-gradient(0deg, #00ff00, #0c2905);
+}
+
+/* Result Box */
+.result {
+  margin-top: 40px;
+  padding: 20px;
+  border-radius: 15px;
+  background: #ea9852;
+  color: #fff;
+  line-height: 1.6;
+  box-shadow: 0 4px 15px rgb(0,0,0);
+}
+
+/* Price warnings */
+.price-warning-low {
+  background: #fff3cd;
+  color: #856404;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.price-warning-high {
+  background: #f8d7da;
+  color: #721c24;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+/* Media Queries */
+@media(max-width: 1024px) {
+  .container { flex-direction: column; align-items: center; padding: 20px; }
+  .flex-row { flex-direction: column; gap: 10px; }
+}
+
+@media(max-width: 768px) {
+  h1 { font-size: 1.7rem; }
+  h3 { font-size: 1.2rem; }
+  input, select, button { font-size: 1rem; }
+  .result { padding: 30px; font-size: 1rem; }
+}
+
+@media(max-width: 600px) {
+  .container { flex-direction: column; align-items: center; }
+  .flex-row { flex-direction: column; }
+}
+
+@media(max-width: 480px) {
+  body { font-size: 14px; }
+  h1 { font-size: 1.5rem; }
+  h3 { font-size: 1.1rem; }
+  input, select, button { font-size: 0.95rem; padding: 8px; }
+  .calculator-container, .instruction-box { padding: 15px; width: 95%; }
+  .result { padding: 20px; font-size: 0.95rem; }
+}
+
+/* Preloader */
+#preloader {
+  position: fixed;
+  inset: 0;
+  background: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  z-index: 9999;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+#preloader.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.loading-dots span {
+  display: inline-block;
+  width: 15px;
+  height: 12px;
+  margin: 5px;
+  background: #bfa06f;
+  border-radius: 50%;
+  animation: bounce 0.6s infinite alternate;
+}
+
+.loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+.loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes bounce { to { transform: translateY(-15px); } }
+
+body.loading-page *:not(#preloader) {
+  pointer-events: none;
+  user-select: none;
+}
+</style>
+
+</head>
+
+<body class="loading-page">
+<div id="preloader">
+  <img src="images/logosss.png" alt="Logo" width="300">
+  <br>
+  <div class="loading-dots"><span></span><span></span><span></span></div>
+</div>
+<div id="main-content" style="display:none;">
+  <!-- your main content -->
+</div>
+
+    <!-- nav bar  -->
+    <nav class="main-menu d-flex navbar fixed-top py-4">
+        <div class="container">
+            <div class="main-logo">
+                <a href="index.html" class="d-none d-md-flex">
+                    <img src="images/logo.png" alt="logo" class="img-fluid">
+                </a>
+                <a href="index.html" class="d-flex d-md-none">
+                    <img src="images/logo-short.png" alt="logo" class="img-fluid">
+                </a>
+            </div>
+        </div>
+        <header>
+  <div style="position:absolute; right:20px; top:50%; transform:translateY(-50%);">
+    <button id="helpBtn"
+      style="padding:12px 20px; border:none; border-radius:55px; cursor:pointer;
+             font-weight:bold; transition:0.3s all; color:#fff;
+             background: linear-gradient(135deg,#ECB602,#c10c00);
+             box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
+      User Guide
+    </button>
+  </div>
+</header>
+    </nav>
+
+
+<!-- Calculator Container -->
+<section id="about" class="position-relative padding-medium">
+  <div class="position-absolute end-0 z-n1 d-none d-lg-flex">
+    <img src="images/background-1.png" alt="pattern">
+  </div>
+
+  <div class="container padding-small">
+    <div class="row g-4">
+
+      <!-- 1st Column -->
+      <div class="col-lg-3 col-md-6 col-12">
+        <div class="calculator-container">
+          <h3 class="text-uppercase mb-5" style="margin-bottom:5px;"><b>📜 Price Estimator</b></h3>
+          <label>Date</label>
+          <input type="date" id="quoteDate">
+
+          <label>Select Material</label>
+          <select id="material"></select>
+
+          <label>Knot Density</label>
+          <select id="knots"></select>
+
+          <label>Base Price per m²</label>
+          <input type="number" id="basePrice" placeholder="Set Base Price">
+
+          <label>Unit</label>
+          <select id="unit">
+            <option value="cm">cm</option>
+            <option value="inch">inch</option>
+            <option value="feet">feet</option>
+            <option value="meter">meter</option>
+          </select>
+
+          <label>Length</label>
+          <input type="number" id="length" min="0" placeholder="Enter Length">
+
+          <label>Width</label>
+          <input type="number" id="width" min="0" placeholder="Enter Width">
+
+          <label><input type="checkbox" id="irregular"> Irregular Shape (+3%)</label>
+
+          <div class="flex-row">
+            <button id="calculate">Calculate</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2nd Column -->
+      <div class="col-lg-3 col-md-6 col-12">
+        <div class="calculator-container">
+          <h3 class="text-uppercase mb-5"><b>👨‍💼 Client Profile</b></h3>
+
+ <label>Client Name </label>
+          <input type="text" id="clientName" placeholder="Client Name">
+          <label>Address </label>
+          <input type="text" id="clientAddress" placeholder="Client Address">
+          <label>Email </label>
+          <input type="email" id="clientEmail" placeholder="Client Email">
+          <label>Phone </label>
+          <input type="text" id="clientPhone" placeholder="Client Phone Number">
+<br>
+          <div class="result" id="result"></div>
+          <button id="exportPDF">Download PDF</button>
+        </div>
+      </div>
+
+      <!-- 3rd Column -->
+      <div class="col-lg-3 col-md-6 col-12">
+        <div class="calculator-container">
+          <h3 class="text-uppercase mb-5"><b>🏛️ My Company</b></h3>
+
+          <label>Upload Logo</label>
+          <input type="file" id="companyLogoInput" accept="image/*">
+
+          <label>Company Name</label>
+          <input type="text" id="companyName" placeholder="Your Company Name">
+          <label>Email</label>
+          <input type="text" id="companyEmail" placeholder="email@example.com">
+          <label>Address:</label>
+          <input type="text" id="companyAddress" placeholder="Company Address">
+          <label>Contact</label>
+          <input type="text" id="companyContact" placeholder="Phone/WhatsApp">
+
+        </div>
+      </div>
+
+
+      <!-- 4th Column -->
+      <div class="col-lg-3 col-md-6 col-12">
+        <div class="calculator-container">
+          <h3 class="text-uppercase mb-5"><b>⚙️ System Settings</b></h3>
+<label>Add Raw Material</label>
+          <div class="flex-row">
+            <input type="text" id="newMaterial" placeholder="Add New Material">
+            <button id="addMaterial">Add</button>
+            <button id="deleteMaterial">Remove</button>
+          </div>
+
+<label>Set Knot/Price</label>
+          <div class="flex-row">
+            <input type="number" id="newKnot" placeholder="Add New Knot Density">
+            <input type="number" id="newKnotPrice" placeholder="Price per m²">
+            <button id="addNewKnot">Set</button>
+            <button id="deleteKnot">Remove</button>
+          </div>
+
+<label>Import/Export CSV</label>
+          <div class="flex-row">
+            <input type="file" id="importCSV" accept=".csv">
+            <button id="exportCSV">Export CSV</button>
+          </div>
+        </div>
+      </div>
+<br>
+<br>
+<br>
+<br>
+<br>
+          <div><button id="reset">Reset to Default</button></div>
+    </div>
+  </div>
+</section>
+
+<script>
+// Default data
+let defaultRugs = {
+"Tibetan/New Zealand Wool": {60:137.53,80:165.47,100:218.88,150:302.60},
+"Wool & Viscose": {60:147.50,80:177.21,100:234.32,150:314.00},
+"Wool & Tencel": {60:321.52,80:309.81,100:410.32}
+};
+
+let rugs = JSON.parse(localStorage.getItem("rugPrices")) || defaultRugs;
+
+// DOM elements
+const materialSelect=document.getElementById("material");
+const knotsSelect=document.getElementById("knots");
+const basePriceInput=document.getElementById("basePrice");
+const newMaterialInput=document.getElementById("newMaterial");
+const newKnotInput=document.getElementById("newKnot");
+const newKnotPriceInput=document.getElementById("newKnotPrice");
+const unitSelect=document.getElementById("unit");
+const lengthInput=document.getElementById("length");
+const widthInput=document.getElementById("width");
+const irregularCheckbox=document.getElementById("irregular");
+const resultDiv=document.getElementById("result");
+
+// Logo handling
+// ================= Company Logo & Profile Save/Load =================
+let logoData = localStorage.getItem("companyLogo");
+const logoInput = document.getElementById("companyLogoInput");
+
+// Load saved logo on page load
+if (logoData) {
+  // Just keep it in memory, PDF export will show it
+}
+
+// When user uploads logo
+logoInput.addEventListener("change", (e) => {
+  const reader = new FileReader();
+  reader.onload = function (event) {
+    logoData = event.target.result;
+    localStorage.setItem("companyLogo", logoData);
+  };
+  reader.readAsDataURL(e.target.files[0]);
+});
+
+// Company Profile fields
+const companyFields = ["companyName", "companyEmail", "companyAddress", "companyContact"];
+
+// Load saved values
+companyFields.forEach((id) => {
+  const el = document.getElementById(id);
+  const saved = localStorage.getItem(id);
+  if (saved) el.value = saved;
+  el.addEventListener("input", () => {
+    localStorage.setItem(id, el.value);
+  });
+});
+
+
+
+// Populate Materials and Knots
+function populateMaterials(){
+  materialSelect.innerHTML="";
+  for(let mat in rugs){
+    let opt=document.createElement("option"); opt.value=mat; opt.textContent=mat;
+    materialSelect.appendChild(opt);
+  }
+  populateKnots();
+}
+
+function populateKnots(){
+  knotsSelect.innerHTML="";
+  let mat=materialSelect.value;
+  if(rugs[mat]){
+    for(let knot in rugs[mat]){
+      let opt=document.createElement("option"); opt.value=knot; opt.textContent=knot+" knots/m²";
+      knotsSelect.appendChild(opt);
+    }
+  }
+  updateBasePrice();
+}
+
+function updateBasePrice(){
+  let mat=materialSelect.value; let knot=knotsSelect.value;
+  basePriceInput.value=(rugs[mat]&&rugs[mat][knot])||"";
+}
+
+// Event Listeners
+materialSelect.addEventListener("change",populateKnots);
+knotsSelect.addEventListener("change",updateBasePrice);
+
+// Add / Delete Material & Knot
+document.getElementById("addMaterial").onclick=()=>{
+  let mat=newMaterialInput.value.trim();
+  if(!mat){alert("Enter material name."); return;}
+  if(!rugs[mat]) rugs[mat]={};
+  localStorage.setItem("rugPrices",JSON.stringify(rugs));
+  newMaterialInput.value=""; populateMaterials(); alert("Material added!");
+};
+
+document.getElementById("savePrice")?.addEventListener("click",()=>{
+  let mat=materialSelect.value; let knot=knotsSelect.value; let price=parseFloat(basePriceInput.value);
+  if(isNaN(price)||price<=0){alert("Enter valid price"); return;}
+  rugs[mat][knot]=price; localStorage.setItem("rugPrices",JSON.stringify(rugs)); alert("Price saved!");
+});
+
+document.getElementById("addNewKnot").onclick=()=>{
+  let mat=materialSelect.value; let knot=parseInt(newKnotInput.value); let price=parseFloat(newKnotPriceInput.value);
+  if(isNaN(knot)||knot<=0||isNaN(price)||price<=0){alert("Enter valid knot & price"); return;}
+  rugs[mat][knot]=price; localStorage.setItem("rugPrices",JSON.stringify(rugs));
+  newKnotInput.value=""; newKnotPriceInput.value=""; populateKnots(); alert("Knot added!");
+};
+
+document.getElementById("deleteKnot").onclick=()=>{
+  let mat=materialSelect.value; let knot=knotsSelect.value;
+  delete rugs[mat][knot]; if(Object.keys(rugs[mat]).length===0) delete rugs[mat];
+  localStorage.setItem("rugPrices",JSON.stringify(rugs)); populateMaterials(); alert("Knot deleted!");
+};
+
+document.getElementById("deleteMaterial").onclick=()=>{
+  let mat=materialSelect.value; delete rugs[mat]; localStorage.setItem("rugPrices",JSON.stringify(rugs));
+  populateMaterials(); alert("Material deleted!");
+};
+
+// Convert to m²
+function convertToSqMeter(len,wid,unit){
+  if(unit==="cm") return (len/100)*(wid/100);
+  if(unit==="inch") return (len*0.0254)*(wid*0.0254);
+  if(unit==="feet") return (len*0.3048)*(wid*0.3048);
+  return len*wid;
+}
+
+// Calculate Price
+document.getElementById("calculate").onclick=()=>{
+  let mat=materialSelect.value; let knot=knotsSelect.value;
+  let unit=unitSelect.value; let len=parseFloat(lengthInput.value); let wid=parseFloat(widthInput.value);
+  let irregular=irregularCheckbox.checked;
+  if(isNaN(len)||isNaN(wid)||len<=0||wid<=0){alert("Enter valid dimensions"); return;}
+  let basePrice=rugs[mat][knot]; if(!basePrice){alert("Select knot with price"); return;}
+  let areaM2=convertToSqMeter(len,wid,unit); let totalPrice=basePrice*areaM2;
+  if(irregular) totalPrice*=1.03;
+  resultDiv.innerHTML=`
+    <b>Material:</b> ${mat}<br> 
+    <b>Knot Density:</b> ${knot} knots<br>
+    <b>Area:</b> ${areaM2.toFixed(2)} m²<br>
+    <b>Base Rate:</b> $${basePrice.toFixed(2)} per m²<br>
+    <br>
+    <b>Final Price:</b> $${totalPrice.toFixed(2)}`;
+};
+
+// Reset
+// Reset (Logo + Profile + Prices)
+document.getElementById("reset").onclick = () => {
+  lengthInput.value = "";
+  widthInput.value = "";
+  irregularCheckbox.checked = false;
+  resultDiv.innerHTML = "";
+
+  // Clear company info & logo
+  ["companyName", "companyEmail", "companyAddress", "companyContact", "companyLogo"].forEach((key) => {
+    localStorage.removeItem(key);
+  });
+  companyFields.forEach((id) => (document.getElementById(id).value = ""));
+  logoData = null;
+  logoInput.value = "";
+
+  // Reset rug prices to defaults
+  localStorage.removeItem("rugPrices");
+  rugs = JSON.parse(JSON.stringify(defaultRugs));
+  populateMaterials();
+
+  alert("Calculator reset to default!");
+};
+
+
+
+// CSV Export / Import
+document.getElementById("exportCSV").onclick=()=>{
+  let csv="Material,Knot,Price\n";
+  for(let mat in rugs){ for(let knot in rugs[mat]){ csv+=`${mat},${knot},${rugs[mat][knot]}\n`;}}
+  let blob=new Blob([csv],{type:"text/csv"}); let url=URL.createObjectURL(blob);
+  let a=document.createElement("a"); a.href=url; a.download="rug_prices.csv"; a.click(); URL.revokeObjectURL(url);
+};
+
+document.getElementById("importCSV").addEventListener("change",function(e){
+  let file=e.target.files[0]; if(!file) return; let reader=new FileReader();
+ reader.onload = function(e){
+  let lines = e.target.result.split("\n");
+  lines.forEach((line, index) => {
+    if(index === 0) return; // skip header row
+    if(!line.trim()) return; // skip empty lines
+
+    let [mat,knot,price] = line.split(",");
+    if(mat && knot && price){
+      if(!rugs[mat]) rugs[mat] = {};
+      rugs[mat][parseInt(knot)] = parseFloat(price);
+    }
+  });
+  localStorage.setItem("rugPrices", JSON.stringify(rugs));
+  populateMaterials();
+  alert("CSV Imported!");
+};
+
+  reader.readAsText(file);
+});
+
+// PDF Export - Luxury Styled Version
+document.getElementById("exportPDF").onclick = async () => {
+  if (resultDiv.innerHTML === "") { alert("Please calculate first!"); return; }
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF("p", "mm", "a4");
+
+  // Temporary container for html2canvas
+  const content = document.createElement("div");
+  content.style.background = "#e6e0f8"; // Light purple
+  content.style.padding = "25px";
+  content.style.borderRadius = "15px";
+  content.style.fontFamily = "'Segoe UI', sans-serif";
+  content.style.color = "#2a2a2a";
+  content.style.width = "800px"; // canvas width
+  content.style.lineHeight = "1.5";
+
+  content.innerHTML = `
+  <!-- Company Header -->
+  <div style="text-align:center; margin-bottom:20px; border-bottom:2px solid #77a903; padding-bottom:15px;">
+    ${logoData ? `<img src="${logoData}" style="max-height:70px; margin-bottom:10px;">` : ""}
+    <h1 style="color:#4b0082; margin:5px 0;">${document.getElementById("companyName").value || "Custom Price Quotation"}</h1>
+    <div style="font-size:12px; color:#4b0082;">
+      ${document.getElementById("companyEmail").value || ""} | ${document.getElementById("companyContact").value || ""}
+    </div>
+    <div style="font-size:12px; color:#4b0082;">
+      ${document.getElementById("companyAddress").value || ""}
+    </div>
+  </div>
+
+  <div><b>Date:</b> ${document.getElementById("quoteDate").value || ""}</div>
+
+  <!-- Client Details Section -->
+  <div style="margin:20px auto; max-width:800px; background:#1e1e1e; padding:20px; border-radius:12px;">
+    <h2 style="color:#d4af37; text-align:center; margin-bottom:20px;">Client Details</h2>
+    <p style="color:#fff;"><b>Name:</b> ${document.getElementById("clientName").value || ""}</p>
+    <p style="color:#fff;"><b>Address:</b> ${document.getElementById("clientAddress").value || ""}</p>
+    <p style="color:#fff;"><b>Email:</b> ${document.getElementById("clientEmail").value || ""}</p>
+    <p style="color:#fff;"><b>Phone:</b> ${document.getElementById("clientPhone").value || ""}</p>
+  </div>
+ <br>
+    <br>
+  <!-- Rug Calculation Result -->
+<div style="padding:20px; background:#d6c1ff; border-radius:12px; box-shadow:inset 0 3px 10px rgba(0,0,0,0.1);">
+  <h2 style="text-align:center; color:#4b0082; margin-bottom:15px;"><u>Price Quotation</u></h2>
+  ${resultDiv.innerHTML}
+</div>
+ <br>
+  <!-- Warning Note -->
+  <p style="margin-top:20px; font-size:14px; color:#b22222; text-align:center; font-weight:bold;">
+    ⚠️ This is an estimated quotation only. Final pricing may vary based on other addational service.
+  </p>
+</div>
+
+       <br>
+      
+    <br>
+    <br>
+      <br>
+    <!-- Thank you note -->
+    <p style="text-align:center; margin-top:30px; font-style:italic; color:#4b0082;"><b>Thank you for your business!</b>
+    <br>
+      <br>
+      <br> © Powered by Rug Soul</p>
+  `;
+
+  // Append to DOM for html2canvas
+  document.body.appendChild(content);
+
+  await html2canvas(content, { scale: 2 }).then(canvas => {
+    const imgData = canvas.toDataURL("image/png");
+    const imgProps = pdf.getImageProperties(imgData);
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+    pdf.save("Rug_Quotation.pdf");
+  });
+
+  document.body.removeChild(content);
+};
+
+
+// Initialize
+populateMaterials();
+
+
+// Help button toggle
+document.getElementById("helpBtn").onclick = () => {
+  document.getElementById("helpModal").style.display = "flex";
+};
+
+
+
+// Header Beauty
+
+const btn = document.getElementById('helpBtn');
+  btn.addEventListener('mouseenter', () => {
+    btn.style.boxShadow = '0 6px 20px rgba(236,182,2,0.6)';
+    btn.style.transform = 'scale(1.05)';
+  });
+  btn.addEventListener('mouseleave', () => {
+    btn.style.boxShadow = '0 4px 8px rgba(0,0,0,0.2)';
+    btn.style.transform = 'scale(1)';
+  });
+</script>
+
+<script>
+  window.addEventListener('load', function() {
+    const preloader = document.getElementById('preloader');
+    const main = document.getElementById('main-content');
+
+    if(preloader){
+      // Smooth fade out
+      preloader.style.opacity = '0';
+      preloader.style.transition = 'opacity 20s ease';
+      setTimeout(() => preloader.remove(),2000);
+    }
+
+    if(main) main.style.display = 'block';
+    document.body.classList.remove('loading-page');
+  });
+</script>
+
+
+
+<!-- Help Modal -->
+<div id="helpModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+  background:rgba(0,0,0,0.7); z-index:1000; justify-content:center; align-items:center;">
+  <div style="background:#fff; color:#333; padding:30px; border-radius:15px; max-width:800px; max-height:80%; overflow:auto;">
+    <h2 style="margin-top:0; color:#4b0082;">📖 Rug Calculator - <b><u>How It Works</u></b></h2>
+    <ol style="line-height:1.6;">
+      <li>Select <b>Material</b> and <b>Knot Density</b>.</li>
+  <li>Price is per <b>m²</b>. Edit and save your own price if needed.</li>
+  <li>Enter rug <b>Length</b> & <b>Width</b> in your preferred unit (cm, inch, feet, meter).</li>
+  <li>Tick <b>Irregular Shape</b> if the rug has an irregular shape (+3%).</li>
+  <li>Add knots separately and set prices individually.</li>
+  <li>Add/Delete <b>Materials</b> or <b>Knots</b> anytime from the left panel.</li>
+  <li>Bulk <b>CSV import/export</b> available for all materials and knots.</li>
+  <li>All changes are saved automatically for future use.</li>
+  <li>Upload your <b>Company Logo</b> and enter company/client details to generate a professional PDF price quotation.</li>
+  <li>Fill <b>Client Info</b> and click <b>Calculate</b> to get the price.</li>
+  <li>Download the professional price quotation via <b>PDF Export</b>.</li>
+  <li>Back to Original, Click<b> Reset Button</b>.</li>
+    </ol>
+    <div style="text-align:center; margin-top:20px;">
+      <button onclick="document.getElementById('helpModal').style.display='none'"
+        style="padding:10px 20px; border:none; background:#4b0082; color:#fff;
+               border-radius:10px; cursor:pointer;">
+        Close
+      </button>
+    </div>
+  </div>
+</div>
+
+
+
+
+  <footer style="text-align:center; padding:15px; font-size:14px; color:#bfa06f; font-family:'Georgia', serif; background-color:#1a1a1a; letter-spacing:0.5px; border-top:1px solid #bfa06f;">
+  Developed by <a href="https://rugsoul.rf.gd" target="_blank" style="color:#bfa06f; text-decoration:none; opacity:0.9;">
+    <strong><u>Rug Soul</u></strong> © 2025 </a>
+
+</footer>
+
+
+    <script src="js/jquery-1.11.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <script src="js/plugins.js"></script>
+    <script src="js/script.js"></script>
+
+</body>
+
+</html>
